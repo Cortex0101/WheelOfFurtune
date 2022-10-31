@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.annotation.ColorInt
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -41,8 +40,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.ColorUtils
-import com.cortex.wheeloffurtune.Utility.formatTime
+import com.cortex.wheeloffurtune.utils.Utility.formatTime
 import com.cortex.wheeloffurtune.ui.theme.WheelOfFurtuneTheme
+import com.cortex.wheeloffurtune.utils.Utility
 import kotlin.math.absoluteValue
 
 class MainActivity : ComponentActivity() {

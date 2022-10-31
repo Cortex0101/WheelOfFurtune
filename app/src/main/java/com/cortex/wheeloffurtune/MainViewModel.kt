@@ -4,8 +4,9 @@ import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.cortex.wheeloffurtune.Utility.formatTime
+import com.cortex.wheeloffurtune.utils.Utility.formatTime
 import com.cortex.wheeloffurtune.helper.SingleLiveEvent
+import com.cortex.wheeloffurtune.utils.Utility
 
 class MainViewModel : ViewModel() {
 
