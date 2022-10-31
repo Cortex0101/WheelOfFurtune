@@ -1,3 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">s215822 WheelOfFurtune</string>
+
+    <string-array name="words">
+        <item>Car_parts compressor</item>
+        <item>Car_parts condenser</item>
+        <item>Car_parts differential</item>
+        <item>Car_parts transmission</item>
+
+        <item>Chemistry catalyst</item>m>
+        <item>Chemistry concentration</item>
+        <item>Chemistry electrolysis</item>
+        <item>Chemistry molecule</item>
+
+        <item>Coding argument</item>
+        <item>Coding function</item>
+        <item>Coding parameter</item>
+        <item>Coding syntax</item>
+
+        <item>Data_structure array</item>
+        <item>Data_structure container</item>
+        <item>Data_structure dictionary</item>
+        <item>Data_structure string</item>
+
+        <item>Gaming adventure</item>
+        <item>Gaming platformer</item>
+        <item>Gaming strategy</item>
+        <item>Gaming texture</item>
+
+        <item>Linear_algebra combination</item>
+        <item>Linear_algebra identity</item>
+        <item>Linear_algebra independence</item>
+        <item>Linear_algebra norm</item>
+    </string-array>
 </resources>
