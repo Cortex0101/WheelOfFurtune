@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cortex.wheeloffurtune.ui.theme.WheelOfFurtuneTheme
 import com.cortex.wheeloffurtune.view.CountDownView
+import org.w3c.dom.Text
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +48,7 @@ class MainActivity : ComponentActivity() {
                         UserHead(firstName = "Lucas",
                                  lastName = "Eiruff",
                                  modifier = Modifier.size(80.dp))
-                        MoneyBar(color = Color(getColor(R.color.purple_500)))
+                        MoneyBar("Player balance")
 
                         Column(modifier = Modifier
                             .background(Color(getColor(R.color.teal_200)))
@@ -56,6 +57,7 @@ class MainActivity : ComponentActivity() {
                             Grid(word = extendWordToSize(word.word, 17).toList())
                             Grid(word = extendWordToSize("", 17).toList())
                         }
+
                         Spacer(Modifier.size(10.dp))
                         Box(modifier = Modifier.fillMaxSize(0.8f),
                         contentAlignment = Alignment.TopCenter) {
@@ -93,11 +95,12 @@ fun UserHead(
 
 @Composable
 fun MoneyBar(
-    color: Color,
-    modifier: Modifier = Modifier
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = colorResource(id = R.color.purple_200)
 ){
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth(0.4f)
             .height(40.dp)
             .background(
@@ -106,7 +109,7 @@ fun MoneyBar(
             ),
         contentAlignment = Alignment.Center
     ){
-        Text(text = "Search for music")
+        Text(text = text)
     }
 }
 
