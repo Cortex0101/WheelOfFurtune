@@ -3,7 +3,6 @@ package com.cortex.wheeloffurtune
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.ColorInt
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -28,31 +26,29 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.ColorUtils
 import com.cortex.wheeloffurtune.ui.theme.WheelOfFurtuneTheme
 import com.cortex.wheeloffurtune.view.CountDownView
-import kotlin.math.absoluteValue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val word = getRandomWord(resources.getStringArray(R.array.words))
-            //val word = Word("the category", "concentration")
             WheelOfFurtuneTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        UserHead(id = "test", firstName = "Lucas", lastName = "Eiruff")
+                        UserHead(firstName = "Lucas",
+                                 lastName = "Eiruff",
+                                 modifier = Modifier.size(80.dp))
                         MoneyBar(color = Color(getColor(R.color.purple_500)))
+
                         Column(modifier = Modifier
                             .background(Color(getColor(R.color.teal_200)))
                             .border(4.dp, Color(getColor(R.color.teal_700)))) {
@@ -60,6 +56,7 @@ class MainActivity : ComponentActivity() {
                             Grid(word = extendWordToSize(word.word, 17).toList())
                             Grid(word = extendWordToSize("", 17).toList())
                         }
+                        Spacer(Modifier.size(10.dp))
                         Box(modifier = Modifier.fillMaxSize(0.8f),
                         contentAlignment = Alignment.TopCenter) {
                             CategoryDisplay(category = word.category, backgroundGradientSide = Color(getColor(R.color.teal_700)), backgroundGradientMiddle = Color(getColor(R.color.teal_200)), borderGradientSide = Color(getColor(R.color.purple_500)), borderGradientMiddle = Color(getColor(R.color.purple_200)))
@@ -69,6 +66,28 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+}
+
+@Composable
+fun UserHead(
+    firstName: String,
+    lastName: String,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = colorResource(id = R.color.teal_200),
+    strokeColor: Color = colorResource(id = R.color.teal_700),
+) {
+    Box(modifier, contentAlignment = Alignment.Center) {
+        val initials = (firstName.take(1) + lastName.take(1)).uppercase()
+
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawCircle(SolidColor(backgroundColor))
+            drawCircle(strokeColor, style = Stroke(8f))
+        }
+
+        Text(text = initials,
+             style = MaterialTheme.typography.titleLarge,
+             color = Color.White)
     }
 }
 
@@ -88,37 +107,6 @@ fun MoneyBar(
         contentAlignment = Alignment.Center
     ){
         Text(text = "Search for music")
-    }
-}
-
-@ColorInt
-fun String.toHslColor(saturation: Float = 0.5f, lightness: Float = 0.4f): Int {
-    val hue = fold(0) { acc, char -> char.code + acc * 37 } % 360
-    return ColorUtils.HSLToColor(floatArrayOf(hue.absoluteValue.toFloat(), saturation, lightness))
-}
-
-@Composable
-fun UserHead(
-    id: String,
-    firstName: String,
-    lastName: String,
-    modifier: Modifier = Modifier,
-    size: Dp = 80.dp,
-    textStyle: TextStyle = MaterialTheme.typography.titleLarge,
-) {
-    Box(modifier.size(size), contentAlignment = Alignment.Center) {
-        val color = remember(id, firstName, lastName) {
-            val name = listOf(firstName, lastName)
-                .joinToString(separator = "")
-                .uppercase()
-            Color("$id / $name".toHslColor())
-        }
-        val initials = (firstName.take(1) + lastName.take(1)).uppercase()
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            drawCircle(SolidColor(color))
-            drawCircle(Color.Red, style = Stroke(8f))
-        }
-        Text(text = initials, style = textStyle, color = Color.White)
     }
 }
 
