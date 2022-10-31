@@ -2,10 +2,7 @@ package com.cortex.wheeloffurtune.view.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProgressIndicatorDefaults
@@ -60,8 +57,8 @@ fun CountDownIndicator(
             Column(modifier = Modifier.align(Alignment.Center)) {
                 Text(
                     text = time,
-                    color = Color.White,
-                    style = MaterialTheme.typography.h2,
+                    color = colorResource(R.color.purple_200),
+                    style = MaterialTheme.typography.h6,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
                     fontWeight = FontWeight.Bold
                 )

@@ -60,8 +60,11 @@ class MainActivity : ComponentActivity() {
                             Grid(word = extendWordToSize(word.word, 17).toList())
                             Grid(word = extendWordToSize("", 17).toList())
                         }
-                        CategoryDisplay(category = word.category, backgroundGradientSide = Color(getColor(R.color.teal_700)), backgroundGradientMiddle = Color(getColor(R.color.teal_200)), borderGradientSide = Color(getColor(R.color.purple_500)), borderGradientMiddle = Color(getColor(R.color.purple_200)))
-                        CountDownView()
+                        Box(modifier = Modifier.fillMaxSize(0.8f),
+                        contentAlignment = Alignment.TopCenter) {
+                            CategoryDisplay(category = word.category, backgroundGradientSide = Color(getColor(R.color.teal_700)), backgroundGradientMiddle = Color(getColor(R.color.teal_200)), borderGradientSide = Color(getColor(R.color.purple_500)), borderGradientMiddle = Color(getColor(R.color.purple_200)))
+                            CountDownView()
+                        }
                     }
                 }
             }
@@ -136,6 +139,7 @@ fun Grid(word: List<Char>) {
 @Composable
 fun CategoryDisplay(category: String, backgroundGradientSide: Color, backgroundGradientMiddle: Color, borderGradientSide: Color, borderGradientMiddle: Color) {
     Box(modifier = Modifier
+        .padding(top = 10.dp)
         .background(
             Brush.horizontalGradient(
                 listOf(
