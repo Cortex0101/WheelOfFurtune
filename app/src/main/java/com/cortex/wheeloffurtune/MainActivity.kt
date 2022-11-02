@@ -3,9 +3,8 @@ package com.cortex.wheeloffurtune
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -14,10 +13,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -27,12 +27,12 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.cortex.wheeloffurtune.ui.theme.WheelOfFurtuneTheme
 import com.cortex.wheeloffurtune.view.CountDownView
-import org.w3c.dom.Text
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,11 +59,18 @@ class MainActivity : ComponentActivity() {
                         }
 
                         Spacer(Modifier.size(10.dp))
+
                         Box(modifier = Modifier.fillMaxSize(0.8f),
-                        contentAlignment = Alignment.TopCenter) {
-                            CategoryDisplay(category = word.category, backgroundGradientSide = Color(getColor(R.color.teal_700)), backgroundGradientMiddle = Color(getColor(R.color.teal_200)), borderGradientSide = Color(getColor(R.color.purple_500)), borderGradientMiddle = Color(getColor(R.color.purple_200)))
+                            contentAlignment = Alignment.TopCenter) {
+                            CategoryDisplay(category = word.category,
+                                            backgroundGradientSide = Color(getColor(R.color.teal_700)),
+                                            backgroundGradientMiddle = Color(getColor(R.color.teal_200)),
+                                            borderGradientSide = Color(getColor(R.color.purple_500)),
+                                            borderGradientMiddle = Color(getColor(R.color.purple_200)))
                             CountDownView()
                         }
+
+                        SpinningWheel()
                     }
                 }
             }
@@ -212,6 +219,91 @@ fun LetterDisplay(letter: Char, shown: Boolean) {
 }
 
 @Composable
+fun Wheel(
+    rotationDegrees: Float = 0f,
+    clickTogglePlayPause: (() -> Unit)
+) {
+    Image(
+        modifier = Modifier
+            .fillMaxSize(1f)
+            .rotate(rotationDegrees)
+            .aspectRatio(1f)
+            .clickable(onClick = clickTogglePlayPause),
+        painter = painterResource(R.drawable.wof),
+        contentDescription = "",
+    )
+}
+
+@Composable
+fun WheelAnimation(
+    isPlaying: Boolean = false,
+    clickTogglePlayPause: (() -> Unit)
+) {
+    // Allow resume on rotation
+    var currentRotation by remember { mutableStateOf(0f) }
+
+    val rotation = remember { Animatable(currentRotation) }
+
+    LaunchedEffect(isPlaying) {
+        if (isPlaying) {
+            // Infinite repeatable rotation when is playing
+            rotation.animateTo(
+                targetValue = currentRotation + 360f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(3000, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart
+                )
+            ) {
+                currentRotation = value
+            }
+        } else {
+            if (currentRotation > 0f) {
+                // Slow down rotation on pause
+                rotation.animateTo(
+                    targetValue = currentRotation + 50,
+                    animationSpec = tween(
+                        durationMillis = 1250,
+                        easing = LinearOutSlowInEasing
+                    )
+                ) {
+                    currentRotation = value
+                }
+            }
+        }
+    }
+
+    Wheel(rotationDegrees = rotation.value) {
+        clickTogglePlayPause()
+    }
+}
+
+
+@Composable
+fun SpinningWheel() {
+    var playingState by remember { mutableStateOf(false) }
+
+    WheelAnimation(
+        isPlaying = playingState
+    ) {
+        playingState = !playingState
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
@@ -219,7 +311,41 @@ fun Greeting(name: String) {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
+    //val word = getRandomWord(resources.getStringArray(R.array.words))
+    val word = Word("Amusing", "Happy")
     WheelOfFurtuneTheme {
-        Greeting("Android")
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                UserHead(firstName = "Lucas",
+                    lastName = "Eiruff",
+                    modifier = Modifier.size(80.dp))
+                MoneyBar("Player balance")
+
+                Column(modifier = Modifier
+                    .background(Color.Red)
+                    .border(4.dp, Color.Green)) {
+                    Grid(word = extendWordToSize("", 17).toList())
+                    Grid(word = extendWordToSize(word.word, 17).toList())
+                    Grid(word = extendWordToSize("", 17).toList())
+                }
+
+                Spacer(Modifier.size(10.dp))
+
+                Box(modifier = Modifier.fillMaxSize(0.8f),
+                    contentAlignment = Alignment.TopCenter) {
+                    CategoryDisplay(category = word.category,
+                        backgroundGradientSide = Color.Yellow,
+                        backgroundGradientMiddle = Color.Blue,
+                        borderGradientSide = Color.Yellow,
+                        borderGradientMiddle = Color.Blue)
+                    CountDownView()
+                }
+
+                SpinningWheel()
+            }
+        }
     }
 }
