@@ -1,6 +1,4 @@
-package com.cortex.wheeloffurtune
-
-import android.util.Size
+package com.cortex.wheeloffurtune.utils
 
 data class Word(val category: String, val word: String)
 
@@ -11,7 +9,7 @@ fun getRandomWord(words: Array<String>): Word {
 }
 
 fun extendWordToSize(word: String, size: Int): String {
-    val builder = StringBuilder();
+    val builder = StringBuilder()
     builder.append("||")
     builder.append(word)
     builder.append("||")

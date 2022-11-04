@@ -10,7 +10,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,9 +31,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.cortex.wheeloffurtune.ui.theme.WheelOfFurtuneTheme
+import com.cortex.wheeloffurtune.utils.Word
+import com.cortex.wheeloffurtune.utils.extendWordToSize
+import com.cortex.wheeloffurtune.utils.getRandomWord
+import com.cortex.wheeloffurtune.utils.replaceUnderscoresWithSpace
 import com.cortex.wheeloffurtune.view.CountDownView
+import com.cortex.wheeloffurtune.view.KeyboardScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +75,7 @@ class MainActivity : ComponentActivity() {
                             CountDownView()
                         }
 
-                        Keyboard()
+                        KeyboardScreen()
 
                         SpinningWheel()
                     }
@@ -78,49 +84,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-@Composable
-fun Keyboard() {
-    Column() {
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            val firstRow = "QWERTYUIOP"
-            for (letter in firstRow) {
-                ButtonWithElevation(text = letter.toString())
-            }
-        }
-
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            val secondRow = "ASDFGHJKL"
-            for (letter in secondRow) {
-                ButtonWithElevation(text = letter.toString())
-            }
-        }
-
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            val thirdRow = "ZXCVBNM"
-            Spacer(modifier = Modifier.size(30.dp))
-            for (letter in thirdRow) {
-                ButtonWithElevation(text = letter.toString())
-            }
-        }
-    }
-}
-
-@Composable
-fun ButtonWithElevation(text: String) {
-    Button(modifier = Modifier.width(30.dp),
-        contentPadding = PaddingValues(0.dp),
-        onClick = {
-        //your onclick code here
-    }, elevation = ButtonDefaults.buttonElevation(
-        defaultElevation = 10.dp,
-        pressedElevation = 15.dp,
-        disabledElevation = 0.dp
-    )) {
-        Text(text = text, fontSize = 20.sp)
-    }
-}
-
 
 @Composable
 fun UserHead(
@@ -344,13 +307,6 @@ fun SpinningWheel() {
 
 
 
-
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
@@ -387,7 +343,7 @@ fun DefaultPreview() {
                     CountDownView()
                 }
 
-                ButtonWithElevation("A")
+                //ButtonWithElevation("A")
                 SpinningWheel()
             }
         }

@@ -8,6 +8,9 @@ import com.cortex.wheeloffurtune.utils.Utility.formatTime
 import com.cortex.wheeloffurtune.helper.SingleLiveEvent
 import com.cortex.wheeloffurtune.utils.Utility
 
+/*
+    Adapted form https://medium.com/geekculture/exploring-jetpack-compose-build-a-simple-countdown-timer-app-3151f8000529
+ */
 class CountDownViewModel : ViewModel() {
     private val _time = MutableLiveData(Utility.TIME_COUNTDOWN.formatTime())
     val time: LiveData<String> = _time
