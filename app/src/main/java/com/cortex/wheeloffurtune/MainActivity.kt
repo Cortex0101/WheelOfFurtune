@@ -38,6 +38,7 @@ import com.cortex.wheeloffurtune.utils.getRandomWord
 import com.cortex.wheeloffurtune.utils.replaceUnderscoresWithSpace
 import com.cortex.wheeloffurtune.view.CountDownView
 import com.cortex.wheeloffurtune.view.KeyboardScreen
+import com.cortex.wheeloffurtune.view.SpinningWheel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -225,7 +226,7 @@ fun LetterDisplay(letter: Char, shown: Boolean) {
 }
 
 @Composable
-fun Wheel(
+fun Wheel2(
     rotationDegrees: Float = 0f,
     clickTogglePlayPause: (() -> Unit)
 ) {
@@ -238,10 +239,11 @@ fun Wheel(
         painter = painterResource(R.drawable.wof),
         contentDescription = "",
     )
+    println(rotationDegrees)
 }
 
 @Composable
-fun WheelAnimation(
+fun WheelAnimation2(
     isPlaying: Boolean = false,
     clickTogglePlayPause: (() -> Unit)
 ) {
@@ -278,17 +280,17 @@ fun WheelAnimation(
         }
     }
 
-    Wheel(rotationDegrees = rotation.value) {
+    Wheel2(rotationDegrees = rotation.value) {
         clickTogglePlayPause()
     }
 }
 
 
 @Composable
-fun SpinningWheel() {
+fun SpinningWheel2() {
     var playingState by remember { mutableStateOf(false) }
 
-    WheelAnimation(
+    WheelAnimation2(
         isPlaying = playingState
     ) {
         playingState = !playingState
