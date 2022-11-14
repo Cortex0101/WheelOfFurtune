@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +37,7 @@ import com.cortex.wheeloffurtune.utils.Word
 import com.cortex.wheeloffurtune.utils.extendWordToSize
 import com.cortex.wheeloffurtune.utils.getRandomWord
 import com.cortex.wheeloffurtune.utils.replaceUnderscoresWithSpace
+import com.cortex.wheeloffurtune.view.CircularWheelButton
 import com.cortex.wheeloffurtune.view.CountDownView
 import com.cortex.wheeloffurtune.view.KeyboardScreen
 import com.cortex.wheeloffurtune.view.SpinningWheel
@@ -78,7 +80,12 @@ class MainActivity : ComponentActivity() {
 
                         KeyboardScreen()
 
-                        SpinningWheel()
+                        Spacer(modifier = Modifier.size(30.dp).fillMaxWidth())
+
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            SpinningWheel()
+                            CircularWheelButton(modifier = Modifier.padding(start = 15.dp))
+                        }
                     }
                 }
             }

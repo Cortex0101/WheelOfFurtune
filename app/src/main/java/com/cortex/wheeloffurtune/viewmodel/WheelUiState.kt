@@ -1,5 +1,8 @@
 package com.cortex.wheeloffurtune.viewmodel
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.cortex.wheeloffurtune.R
 
 enum class WheelResult {
@@ -27,8 +30,9 @@ enum class WheelResult {
 
  */
 
-data class WheelUiState (
+data class WheelUiState(
     val wheelResult: WheelResult = WheelResult.NONE,
     val wheelRotationDegree: Float = 0f,
-    val wheelId: Int = R.drawable.wof
+    val wheelId: Int = R.drawable.wof,
+    val arrowId: ImageVector = Icons.Default.PlayArrow
         )

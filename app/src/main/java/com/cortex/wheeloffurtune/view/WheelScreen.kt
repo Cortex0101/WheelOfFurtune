@@ -1,32 +1,32 @@
 package com.cortex.wheeloffurtune.view
 
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
-import androidx.compose.runtime.R
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.cortex.wheeloffurtune.viewmodel.KeyboardViewModel
 import com.cortex.wheeloffurtune.viewmodel.WheelViewModel
 
 @Composable
 fun Wheel(
     @DrawableRes id: Int,
     rotationDegrees: Float = 0f,
-    clickTogglePlayPause: (() -> Unit)
 ) {
     Image(
         modifier = Modifier
             .fillMaxSize(1f)
             .rotate(rotationDegrees)
-            .aspectRatio(1f)
-            .clickable(onClick = clickTogglePlayPause),
+            .aspectRatio(1f),
         painter = painterResource(id),
         contentDescription = "",
     )
@@ -35,37 +35,38 @@ fun Wheel(
 @Composable
 fun WheelAnimation(
     @DrawableRes id: Int,
-    target: Float,
-    isPlaying: Boolean = false,
-    clickTogglePlayPause: (() -> Unit)
+    target: Float
 ) {
-    // Allow resume on rotation
-    var currentRotation by remember { mutableStateOf(0f) }
-    var spinCount by remember { mutableStateOf(0) }
+    val rotation: Float by animateFloatAsState(
+        targetValue = target,
+        animationSpec = tween(
+        durationMillis = 2000,
+        easing = LinearOutSlowInEasing
+        )
+    )
 
-    val rotation = remember { Animatable(currentRotation) }
+    Wheel(rotationDegrees = rotation, id = id)
+}
 
-    var done = false
+/*
+    * Displays a small circular button with a play icon in the middle
+ */
+@Composable
+fun CircularWheelButton(modifier: Modifier = Modifier,
+    wheelViewModel: WheelViewModel = viewModel()) {
+    val wheelUiState by wheelViewModel.uiState.collectAsState()
 
-    LaunchedEffect(isPlaying) {
-        rotation.animateTo(
-            targetValue = target,
-            animationSpec = tween(
-                durationMillis = 2000,
-                easing = LinearOutSlowInEasing
-            )
-        ) {
-            currentRotation = value
-            if (currentRotation == target && !done) {
-                clickTogglePlayPause()
-                done = true
-            }
-        }
-    }
-
-    Wheel(rotationDegrees = rotation.value, id = id) {
-        clickTogglePlayPause()
-    }
+    Image(
+        modifier = modifier
+            .fillMaxSize(0.3f)
+            .aspectRatio(1f)
+            .clickable {
+                wheelViewModel.spin()
+                println("res: " + wheelViewModel.uiState.value.wheelRotationDegree)
+            },
+        imageVector = wheelUiState.arrowId,
+        contentDescription = "",
+    )
 }
 
 
@@ -75,18 +76,8 @@ fun SpinningWheel(modifier: Modifier = Modifier,
 ) {
     val wheelUiState by wheelViewModel.uiState.collectAsState()
 
-    var playingState by remember { mutableStateOf(false) }
-
     WheelAnimation(
-        isPlaying = playingState,
         id = wheelUiState.wheelId,
         target = wheelUiState.wheelRotationDegree
-    ) {
-        if (!playingState) {
-            wheelViewModel.spin()
-            println(wheelUiState.wheelRotationDegree)
-        }
-
-        playingState = !playingState
-    }
+    )
 }

@@ -1,7 +1,6 @@
 package com.cortex.wheeloffurtune.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.cortex.wheeloffurtune.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,17 +13,6 @@ class WheelViewModel : ViewModel() {
     init {
         resetState()
     }
-
-    /*
-    fun pressLetter(letter: Char) {
-        if (_uiState.value.inactiveLetters.contains(letter))
-            return
-
-        _uiState.update { currentState ->
-            currentState.copy(inactiveLetters = currentState.inactiveLetters + letter)
-        }
-    }
-     */
 
     fun spin() {
         val result = (0..15).random() // Which of the 16 options?
