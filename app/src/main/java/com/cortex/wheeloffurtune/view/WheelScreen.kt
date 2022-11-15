@@ -53,7 +53,7 @@ fun WheelAnimation(
  */
 @Composable
 fun CircularWheelButton(modifier: Modifier = Modifier,
-    wheelViewModel: WheelViewModel = viewModel()) {
+    wheelViewModel: WheelViewModel) {
     val wheelUiState by wheelViewModel.uiState.collectAsState()
 
     Image(
@@ -72,7 +72,7 @@ fun CircularWheelButton(modifier: Modifier = Modifier,
 
 @Composable
 fun SpinningWheel(modifier: Modifier = Modifier,
-                  wheelViewModel: WheelViewModel = viewModel()
+                  wheelViewModel: WheelViewModel
 ) {
     val wheelUiState by wheelViewModel.uiState.collectAsState()
 

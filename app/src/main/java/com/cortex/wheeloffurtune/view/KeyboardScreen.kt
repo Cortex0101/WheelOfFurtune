@@ -11,11 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel
 import com.cortex.wheeloffurtune.viewmodel.KeyboardViewModel
 
 @Composable
 fun KeyboardScreen(
     modifier: Modifier = Modifier,
+    currentReward: Int,
+    gameUiViewModel: GameUiViewModel,
     keyboardViewModel: KeyboardViewModel = viewModel()
 ) {
     val keyboardUiState by keyboardViewModel.uiState.collectAsState()
@@ -25,7 +28,8 @@ fun KeyboardScreen(
             for (letter in keyboardUiState.firstRowLetters) {
                 KeyboardButton(letter = letter,
                                enabled = !keyboardUiState.inactiveLetters.contains(letter),
-                               onClick = { keyboardViewModel.pressLetter(letter) })
+                               onClick = { keyboardViewModel.pressLetter(letter)
+                                   gameUiViewModel.guessLetter(letter, currentReward) })
             }
         }
 
@@ -33,7 +37,8 @@ fun KeyboardScreen(
             for (letter in keyboardUiState.secondRowLetters) {
                 KeyboardButton(letter = letter,
                                enabled = !keyboardUiState.inactiveLetters.contains(letter),
-                               onClick = { keyboardViewModel.pressLetter(letter) })
+                               onClick = { keyboardViewModel.pressLetter(letter)
+                               gameUiViewModel.guessLetter(letter, currentReward)})
             }
         }
 
@@ -42,7 +47,8 @@ fun KeyboardScreen(
             for (letter in keyboardUiState.thirdRowLetters) {
                 KeyboardButton(letter = letter,
                                enabled = !keyboardUiState.inactiveLetters.contains(letter),
-                               onClick = { keyboardViewModel.pressLetter(letter) })
+                               onClick = { keyboardViewModel.pressLetter(letter)
+                               gameUiViewModel.guessLetter(letter, currentReward)})
             }
         }
     }

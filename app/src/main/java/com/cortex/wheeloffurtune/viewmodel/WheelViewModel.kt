@@ -29,6 +29,23 @@ class WheelViewModel : ViewModel() {
         _uiState.value = WheelUiState()
     }
 
+    fun getWheelResultAsInt(result: WheelResult): Int {
+        when (result) {
+            WheelResult.FIVE_HUNDRED -> return 500
+            WheelResult.SEVEN_HUNDRED_FIFTY -> return 750
+            WheelResult.ONE_THOUSAND -> return 1000
+            WheelResult.ONE_THOUSAND_FIVE_HUNDRED -> return 1500
+            WheelResult.TWO_THOUSAND -> return 2000
+            WheelResult.TWO_THOUSAND_FIVE_HUNDRED -> return 2500
+            WheelResult.THREE_THOUSAND -> return 3000
+            WheelResult.FOUR_THOUSAND -> return 4000
+            WheelResult.SEVENTEEN_THOUSAND_FIVE_HUNDRED -> return 17500
+            WheelResult.TWENTY_FIVE_THOUSAND -> return 25000
+            WheelResult.BANKRUPT -> return -1
+            WheelResult.NONE -> return 0
+        }
+    }
+
     fun getWheelResult(degree: Float): WheelResult {
         if (degree >= 0f && degree < 22.5f) {
             return WheelResult.BANKRUPT

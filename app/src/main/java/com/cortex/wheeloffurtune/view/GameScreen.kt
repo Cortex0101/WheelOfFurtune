@@ -1,0 +1,241 @@
+package com.cortex.wheeloffurtune.view
+
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.cortex.wheeloffurtune.ui.theme.WheelOfFurtuneTheme
+import com.cortex.wheeloffurtune.utils.extendWordToSize
+import com.cortex.wheeloffurtune.utils.replaceUnderscoresWithSpace
+import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel
+import com.cortex.wheeloffurtune.viewmodel.KeyboardViewModel
+import com.cortex.wheeloffurtune.viewmodel.WheelViewModel
+
+@Composable
+fun Grid(
+    gameUiViewModel: GameUiViewModel,
+    word: List<Char>) {
+    val uiState = gameUiViewModel.uiState.collectAsState()
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(17),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 2.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        items(word) { char ->
+            LetterDisplay(letter = char, shown = uiState.value.guessedLetters.contains(char.uppercaseChar()))
+        }
+    }
+}
+
+@Composable
+fun CategoryDisplay(category: String, backgroundGradientSide: Color, backgroundGradientMiddle: Color, borderGradientSide: Color, borderGradientMiddle: Color) {
+    Box(modifier = Modifier
+        .background(
+            Brush.horizontalGradient(
+                listOf(
+                    backgroundGradientSide,
+                    backgroundGradientMiddle,
+                    backgroundGradientSide
+                )
+            )
+        )
+        .fillMaxWidth(0.6f)
+        .drawWithContent {
+            drawContent()
+            clipRect { // Not needed if you do not care about painting half stroke outside
+                val strokeWidth = 10f
+                var y = size.height // - strokeWidth
+                // if the whole line should be inside component
+                drawLine(
+                    brush = Brush.horizontalGradient(
+                        listOf(
+                            borderGradientSide,
+                            borderGradientMiddle,
+                            borderGradientSide
+                        )
+                    ),
+                    strokeWidth = strokeWidth,
+                    cap = StrokeCap.Square,
+                    start = Offset.Zero.copy(y = y),
+                    end = Offset(x = size.width, y = y)
+                )
+                y = 0f
+                drawLine(
+                    brush = Brush.horizontalGradient(
+                        listOf(
+                            borderGradientSide,
+                            borderGradientMiddle,
+                            borderGradientSide
+                        )
+                    ),
+                    strokeWidth = strokeWidth,
+                    cap = StrokeCap.Square,
+                    start = Offset.Zero.copy(y = y),
+                    end = Offset(x = size.width, y = y)
+                )
+            }
+        })
+    {
+        Text(
+            text = replaceUnderscoresWithSpace(category),
+            modifier = Modifier
+                .padding(6.dp)
+                .align(Alignment.Center),
+        )
+    }
+}
+
+@Composable
+fun LetterDisplay(letter: Char, shown: Boolean) {
+    Box(
+        modifier = Modifier
+            .border(width = 2.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            if (shown && letter != '|') // '|' is used when the box cant contain a letter
+                letter.toString()
+            else
+                " ",
+            modifier = Modifier
+                .size(28.dp, 34.dp)
+                .background(
+                    if (letter != '|')
+                        Color(187, 134, 252)
+                    else
+                        Color(55, 0, 179)
+                ),
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
+fun UserHead(
+    firstName: String,
+    lastName: String,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colorScheme.background,
+    strokeColor: Color = MaterialTheme.colorScheme.surface,
+) {
+    Box(modifier, contentAlignment = Alignment.Center) {
+        val initials = (firstName.take(1) + lastName.take(1)).uppercase()
+
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawCircle(SolidColor(backgroundColor))
+            drawCircle(strokeColor, style = Stroke(8f))
+        }
+
+        Text(text = initials,
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.White)
+    }
+}
+
+@Composable
+fun MoneyBar(
+    gameUiViewModel: GameUiViewModel,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.surface
+){
+    val uiState = gameUiViewModel.uiState.collectAsState()
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth(0.4f)
+            .height(40.dp)
+            .background(
+                color,
+                shape = RoundedCornerShape(60.dp)
+            ),
+        contentAlignment = Alignment.Center
+    ){
+        Text(text = uiState.value.money.toString() + "$",
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.White)
+    }
+}
+
+@Composable
+fun WordDisplay(modifier: Modifier = Modifier,
+                gameUiViewModel: GameUiViewModel) {
+    val uiState = gameUiViewModel.uiState.collectAsState()
+
+    Column(modifier = Modifier
+        .background(MaterialTheme.colorScheme.surfaceTint)
+        .border(4.dp, MaterialTheme.colorScheme.surface)) {
+        Grid(gameUiViewModel = gameUiViewModel, word = extendWordToSize("", 17).toList())
+        Grid(gameUiViewModel = gameUiViewModel, word = extendWordToSize(uiState.value.word, 17).toList())
+        Grid(gameUiViewModel = gameUiViewModel, word = extendWordToSize("", 17).toList())
+    }
+}
+
+@Composable
+fun Game(gameUiViewModel: GameUiViewModel, keyboardViewModel: KeyboardViewModel, wheelViewModel: WheelViewModel, modifier: Modifier = Modifier) {
+    WheelOfFurtuneTheme {
+        Surface(
+            modifier = modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background,
+        ) {
+            val keyboardUiState = keyboardViewModel.uiState.collectAsState()
+            val gameUiState = gameUiViewModel.uiState.collectAsState()
+            val wheelUiState = wheelViewModel.uiState.collectAsState()
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                UserHead(firstName = "Lucas",
+                    lastName = "Eiruff",
+                    modifier = Modifier.size(80.dp))
+                MoneyBar(gameUiViewModel = gameUiViewModel)
+
+                WordDisplay(gameUiViewModel = gameUiViewModel)
+
+                Spacer(Modifier.size(10.dp))
+
+                Box(modifier = Modifier.fillMaxWidth(0.8f),
+                    contentAlignment = Alignment.TopCenter) {
+                    CategoryDisplay(category = gameUiState.value.category,
+                        backgroundGradientSide = MaterialTheme.colorScheme.primary,
+                        backgroundGradientMiddle = MaterialTheme.colorScheme.secondary,
+                        borderGradientSide = MaterialTheme.colorScheme.tertiary,
+                        borderGradientMiddle = MaterialTheme.colorScheme.tertiaryContainer)
+                    CountDownView()
+                }
+
+                KeyboardScreen(keyboardViewModel = keyboardViewModel, gameUiViewModel = gameUiViewModel, currentReward = wheelViewModel.getWheelResultAsInt(wheelUiState.value.wheelResult))
+
+                Spacer(modifier = Modifier
+                    .size(30.dp)
+                    .fillMaxWidth())
+
+                Box(modifier = Modifier.fillMaxSize()) {
+                    SpinningWheel(wheelViewModel = wheelViewModel)
+                    CircularWheelButton(wheelViewModel = wheelViewModel,
+                        modifier = Modifier.padding(start = 15.dp))
+                }
+            }
+        }
+    }
+}
