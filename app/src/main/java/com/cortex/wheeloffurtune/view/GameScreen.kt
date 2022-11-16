@@ -1,13 +1,22 @@
 package com.cortex.wheeloffurtune.view
 
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,12 +32,13 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cortex.wheeloffurtune.ui.theme.WheelOfFurtuneTheme
-import com.cortex.wheeloffurtune.utils.extendWordToSize
-import com.cortex.wheeloffurtune.utils.replaceUnderscoresWithSpace
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel
+import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel.Companion.extendWordToSize
+import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel.Companion.replaceUnderscoresWithSpace
 import com.cortex.wheeloffurtune.viewmodel.KeyboardViewModel
 import com.cortex.wheeloffurtune.viewmodel.WheelViewModel
 
@@ -159,7 +169,7 @@ fun UserHead(
 fun MoneyBar(
     gameUiViewModel: GameUiViewModel,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.surface
+    color: Color = MaterialTheme.colorScheme.secondary
 ){
     val uiState = gameUiViewModel.uiState.collectAsState()
 
@@ -194,6 +204,36 @@ fun WordDisplay(modifier: Modifier = Modifier,
 }
 
 @Composable
+fun HealthBar(
+    gameUiViewModel: GameUiViewModel,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.secondary
+){
+    val uiState = gameUiViewModel.uiState.collectAsState()
+    val iconsIndex = (0..uiState.value.lives - 1).toList()
+    val icons = List(uiState.value.lives) { index -> Icons.Default.Favorite }
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth(0.4f)
+            .height(40.dp)
+            .background(
+                color,
+                shape = RoundedCornerShape(60.dp)
+            ),
+        contentAlignment = Alignment.Center
+    ){
+        LazyRow {
+            items(iconsIndex) {
+                Icon(imageVector = icons[it], contentDescription = "Heart", tint = Color.Red)
+            }
+        }
+
+    }
+}
+
+
+@Composable
 fun Game(gameUiViewModel: GameUiViewModel, keyboardViewModel: KeyboardViewModel, wheelViewModel: WheelViewModel, modifier: Modifier = Modifier) {
     WheelOfFurtuneTheme {
         Surface(
@@ -208,7 +248,11 @@ fun Game(gameUiViewModel: GameUiViewModel, keyboardViewModel: KeyboardViewModel,
                 UserHead(firstName = "Lucas",
                     lastName = "Eiruff",
                     modifier = Modifier.size(80.dp))
-                MoneyBar(gameUiViewModel = gameUiViewModel)
+
+                Row {
+                    HealthBar(gameUiViewModel = gameUiViewModel)
+                    MoneyBar(gameUiViewModel = gameUiViewModel)
+                }
 
                 WordDisplay(gameUiViewModel = gameUiViewModel)
 
