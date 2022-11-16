@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlin.random.Random
 
 class GameUiViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(GameUiState())
@@ -14,6 +15,7 @@ class GameUiViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(word = word.word, category = word.category)
         }
+        waitForSpin()
     }
 
     fun guessLetter(letter: Char, currentReward: Int) {
@@ -35,6 +37,30 @@ class GameUiViewModel : ViewModel() {
         _uiState.update { currentState ->
             currentState.copy(guessedLetters = currentState.guessedLetters + letter)
         }
+
+        if (_uiState.value.lives == 0) {
+            gameOver()
+        } else {
+            waitForSpin()
+        }
+    }
+
+    fun waitForSpin() {
+        _uiState.update { currentState ->
+            currentState.copy(gameState = GameState.WAITING_FOR_SPIN)
+        }
+    }
+
+    fun gameOver() {
+        _uiState.update { currentState ->
+            currentState.copy(gameState = GameState.GAME_OVER)
+        }
+    }
+
+    fun waitForGuess() {
+        _uiState.update { currentState ->
+            currentState.copy(gameState = GameState.GUESSING)
+        }
     }
 
     fun resetState() {
@@ -42,10 +68,11 @@ class GameUiViewModel : ViewModel() {
     }
 
     companion object{
+        val rand = Random(System.currentTimeMillis())
         data class Word(val category: String, val word: String)
 
         fun getRandomWord(words: Array<String>): Word {
-            val randomWord = words.random()
+            val randomWord = words.random(rand)
             val wordAndCategory = randomWord.split("\\s".toRegex()).toTypedArray()
             return Word(wordAndCategory[0], wordAndCategory[1])
         }

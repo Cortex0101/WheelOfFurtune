@@ -1,21 +1,17 @@
 package com.cortex.wheeloffurtune.view
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,10 +28,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cortex.wheeloffurtune.ui.theme.WheelOfFurtuneTheme
+import com.cortex.wheeloffurtune.viewmodel.GameState
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel.Companion.extendWordToSize
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel.Companion.replaceUnderscoresWithSpace
@@ -276,7 +272,12 @@ fun Game(gameUiViewModel: GameUiViewModel, keyboardViewModel: KeyboardViewModel,
 
                 Box(modifier = Modifier.fillMaxSize()) {
                     SpinningWheel(wheelViewModel = wheelViewModel)
-                    CircularWheelButton(wheelViewModel = wheelViewModel,
+                    CircularWheelButton(
+                        onClick = {
+                            wheelViewModel.spin()
+                            gameUiViewModel.waitForGuess()
+                        },
+                        shown = gameUiState.value.gameState == GameState.WAITING_FOR_SPIN,
                         modifier = Modifier.padding(start = 15.dp))
                 }
             }

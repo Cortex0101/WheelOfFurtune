@@ -40,6 +40,7 @@ class CountDownViewModel : ViewModel() {
             pauseTimer()
             _celebrate.postValue(false)
         } else {
+            // Just restart for now
             startTimer()
         }
     }

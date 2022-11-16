@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.cortex.wheeloffurtune.viewmodel.GameState
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel
 import com.cortex.wheeloffurtune.viewmodel.KeyboardViewModel
 
@@ -22,14 +23,18 @@ fun KeyboardScreen(
     keyboardViewModel: KeyboardViewModel = viewModel()
 ) {
     val keyboardUiState by keyboardViewModel.uiState.collectAsState()
+    val gameUiState by gameUiViewModel.uiState.collectAsState()
 
     Column() {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             for (letter in keyboardUiState.firstRowLetters) {
                 KeyboardButton(letter = letter,
                                enabled = !keyboardUiState.inactiveLetters.contains(letter),
-                               onClick = { keyboardViewModel.pressLetter(letter)
-                                   gameUiViewModel.guessLetter(letter, currentReward) })
+                                onClick = {
+                        if (gameUiState.gameState == GameState.GUESSING) {
+                            keyboardViewModel.pressLetter(letter)
+                            gameUiViewModel.guessLetter(letter, currentReward)
+                        }})
             }
         }
 
@@ -37,8 +42,11 @@ fun KeyboardScreen(
             for (letter in keyboardUiState.secondRowLetters) {
                 KeyboardButton(letter = letter,
                                enabled = !keyboardUiState.inactiveLetters.contains(letter),
-                               onClick = { keyboardViewModel.pressLetter(letter)
-                               gameUiViewModel.guessLetter(letter, currentReward)})
+                                onClick = {
+                        if (gameUiState.gameState == GameState.GUESSING) {
+                            keyboardViewModel.pressLetter(letter)
+                            gameUiViewModel.guessLetter(letter, currentReward)
+                        }})
             }
         }
 
@@ -47,8 +55,11 @@ fun KeyboardScreen(
             for (letter in keyboardUiState.thirdRowLetters) {
                 KeyboardButton(letter = letter,
                                enabled = !keyboardUiState.inactiveLetters.contains(letter),
-                               onClick = { keyboardViewModel.pressLetter(letter)
-                               gameUiViewModel.guessLetter(letter, currentReward)})
+                               onClick = {
+                                   if (gameUiState.gameState == GameState.GUESSING) {
+                                       keyboardViewModel.pressLetter(letter)
+                                       gameUiViewModel.guessLetter(letter, currentReward)
+                                   }})
             }
         }
     }
