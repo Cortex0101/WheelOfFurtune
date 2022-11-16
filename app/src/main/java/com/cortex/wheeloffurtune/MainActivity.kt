@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.toLowerCase
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -13,6 +12,7 @@ import com.cortex.wheeloffurtune.view.*
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel
 import com.cortex.wheeloffurtune.viewmodel.KeyboardViewModel
 import com.cortex.wheeloffurtune.viewmodel.WheelViewModel
+import java.util.*
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("StateFlowValueCalledInComposition")
@@ -41,8 +41,8 @@ class MainActivity : ComponentActivity() {
                 composable(route = "gameOver") {
                     val str = if (gameUiViewModel.uiState.value.lives == 0) {
                         stringResource(id = R.string.game_over_message,
-                            gameUiViewModel.uiState.value.guessedLetters.toLowerCase().toList().intersect(
-                                gameUiViewModel.uiState.value.word.toLowerCase().toList().toSet()
+                            gameUiViewModel.uiState.value.guessedLetters.lowercase().toList().intersect(
+                                gameUiViewModel.uiState.value.word.lowercase().toList().toSet()
                             ).toSet().size,
                             gameUiViewModel.uiState.value.word.toSet().size,
                             gameUiViewModel.uiState.value.money,

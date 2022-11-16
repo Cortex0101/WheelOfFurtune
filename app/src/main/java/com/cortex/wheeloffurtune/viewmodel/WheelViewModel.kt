@@ -30,23 +30,23 @@ class WheelViewModel : ViewModel() {
     }
 
     fun getWheelResultAsInt(result: WheelResult): Int {
-        when (result) {
-            WheelResult.FIVE_HUNDRED -> return 500
-            WheelResult.SEVEN_HUNDRED_FIFTY -> return 750
-            WheelResult.ONE_THOUSAND -> return 1000
-            WheelResult.ONE_THOUSAND_FIVE_HUNDRED -> return 1500
-            WheelResult.TWO_THOUSAND -> return 2000
-            WheelResult.TWO_THOUSAND_FIVE_HUNDRED -> return 2500
-            WheelResult.THREE_THOUSAND -> return 3000
-            WheelResult.FOUR_THOUSAND -> return 4000
-            WheelResult.SEVENTEEN_THOUSAND_FIVE_HUNDRED -> return 17500
-            WheelResult.TWENTY_FIVE_THOUSAND -> return 25000
-            WheelResult.BANKRUPT -> return -1
-            WheelResult.NONE -> return 0
+        return when (result) {
+            WheelResult.FIVE_HUNDRED -> 500
+            WheelResult.SEVEN_HUNDRED_FIFTY -> 750
+            WheelResult.ONE_THOUSAND -> 1000
+            WheelResult.ONE_THOUSAND_FIVE_HUNDRED -> 1500
+            WheelResult.TWO_THOUSAND -> 2000
+            WheelResult.TWO_THOUSAND_FIVE_HUNDRED -> 2500
+            WheelResult.THREE_THOUSAND -> 3000
+            WheelResult.FOUR_THOUSAND -> 4000
+            WheelResult.SEVENTEEN_THOUSAND_FIVE_HUNDRED -> 17500
+            WheelResult.TWENTY_FIVE_THOUSAND -> 25000
+            WheelResult.BANKRUPT -> -1
+            WheelResult.NONE -> 0
         }
     }
 
-    fun getWheelResult(degree: Float): WheelResult {
+    private fun getWheelResult(degree: Float): WheelResult {
         if (degree >= 0f && degree < 22.5f) {
             return WheelResult.BANKRUPT
         } else if (degree >= 22.5f && degree < 45f) {

@@ -27,7 +27,7 @@ fun KeyboardScreen(
     val keyboardUiState by keyboardViewModel.uiState.collectAsState()
     val gameUiState by gameUiViewModel.uiState.collectAsState()
 
-    Column() {
+    Column {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             for (letter in keyboardUiState.firstRowLetters) {
                 KeyboardButton(letter = letter,

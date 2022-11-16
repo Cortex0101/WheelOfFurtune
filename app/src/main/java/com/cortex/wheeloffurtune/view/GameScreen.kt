@@ -207,7 +207,7 @@ fun HealthBar(
     color: Color = MaterialTheme.colorScheme.secondary
 ){
     val uiState = gameUiViewModel.uiState.collectAsState()
-    val iconsIndex = (0..uiState.value.lives - 1).toList()
+    val iconsIndex = (0 until uiState.value.lives).toList()
     val icons = List(uiState.value.lives) { index -> Icons.Default.Favorite }
 
     Box(

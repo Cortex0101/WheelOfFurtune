@@ -1,12 +1,10 @@
 package com.cortex.wheeloffurtune.viewmodel
 
-import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import java.util.*
 import kotlin.random.Random
 
 class GameUiViewModel : ViewModel() {
@@ -14,7 +12,7 @@ class GameUiViewModel : ViewModel() {
     val uiState: StateFlow<GameUiState> = _uiState
 
     fun newWord(words: Array<String>) {
-        val word = getRandomWord(words);
+        val word = getRandomWord(words)
         _uiState.update { currentState ->
             currentState.copy(word = word.word, category = word.category)
         }
@@ -28,7 +26,7 @@ class GameUiViewModel : ViewModel() {
         if (_uiState.value.word.contains(letter, true)) {
             _uiState.update { currentState ->
                 currentState.copy(
-                    money = currentState.money + (currentReward.toInt() * currentState.word.count { it.equals(letter, true) })
+                    money = currentState.money + (currentReward * currentState.word.count { it.equals(letter, true) })
                 )
             }
         } else {
@@ -41,20 +39,22 @@ class GameUiViewModel : ViewModel() {
             currentState.copy(guessedLetters = currentState.guessedLetters + letter)
         }
 
-        if (_uiState.value.lives == 0 || _uiState.value.guessedLetters.toLowerCase(Locale.ROOT).toList().containsAll(_uiState.value.word.toLowerCase(Locale.ROOT).toList())) {
+        if (_uiState.value.lives == 0 ||
+            _uiState.value.guessedLetters.lowercase().toList().containsAll(
+                _uiState.value.word.lowercase().toList())) {
             gameOver()
         } else {
             waitForSpin()
         }
     }
 
-    fun waitForSpin() {
+    private fun waitForSpin() {
         _uiState.update { currentState ->
             currentState.copy(gameState = GameState.WAITING_FOR_SPIN)
         }
     }
 
-    fun gameOver() {
+    private fun gameOver() {
         _uiState.update { currentState ->
             currentState.copy(gameState = GameState.GAME_OVER)
         }
@@ -77,7 +77,7 @@ class GameUiViewModel : ViewModel() {
     }
 
     companion object{
-        val rand = Random(System.currentTimeMillis())
+        private val rand = Random(System.currentTimeMillis())
         data class Word(val category: String, val word: String)
 
         fun getRandomWord(words: Array<String>): Word {
