@@ -1,9 +1,12 @@
 package com.cortex.wheeloffurtune.viewmodel
 
+import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import java.util.*
 import kotlin.random.Random
 
 class GameUiViewModel : ViewModel() {
@@ -38,7 +41,7 @@ class GameUiViewModel : ViewModel() {
             currentState.copy(guessedLetters = currentState.guessedLetters + letter)
         }
 
-        if (_uiState.value.lives == 0) {
+        if (_uiState.value.lives == 0 || _uiState.value.guessedLetters.toLowerCase(Locale.ROOT).toList().containsAll(_uiState.value.word.toLowerCase(Locale.ROOT).toList())) {
             gameOver()
         } else {
             waitForSpin()
@@ -65,6 +68,12 @@ class GameUiViewModel : ViewModel() {
 
     fun resetState() {
         _uiState.value = GameUiState()
+    }
+
+    fun checkGameStatus(navController: NavController) {
+        if (_uiState.value.gameState == GameState.GAME_OVER) {
+            navController.navigate("gameOver")
+        }
     }
 
     companion object{

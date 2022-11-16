@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.cortex.wheeloffurtune.viewmodel.GameState
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel
 import com.cortex.wheeloffurtune.viewmodel.KeyboardViewModel
@@ -18,6 +19,7 @@ import com.cortex.wheeloffurtune.viewmodel.KeyboardViewModel
 @Composable
 fun KeyboardScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
     currentReward: Int,
     gameUiViewModel: GameUiViewModel,
     keyboardViewModel: KeyboardViewModel = viewModel()
@@ -34,6 +36,7 @@ fun KeyboardScreen(
                         if (gameUiState.gameState == GameState.GUESSING) {
                             keyboardViewModel.pressLetter(letter)
                             gameUiViewModel.guessLetter(letter, currentReward)
+                            gameUiViewModel.checkGameStatus(navController)
                         }})
             }
         }
@@ -46,6 +49,7 @@ fun KeyboardScreen(
                         if (gameUiState.gameState == GameState.GUESSING) {
                             keyboardViewModel.pressLetter(letter)
                             gameUiViewModel.guessLetter(letter, currentReward)
+                            gameUiViewModel.checkGameStatus(navController)
                         }})
             }
         }
@@ -59,6 +63,7 @@ fun KeyboardScreen(
                                    if (gameUiState.gameState == GameState.GUESSING) {
                                        keyboardViewModel.pressLetter(letter)
                                        gameUiViewModel.guessLetter(letter, currentReward)
+                                       gameUiViewModel.checkGameStatus(navController)
                                    }})
             }
         }

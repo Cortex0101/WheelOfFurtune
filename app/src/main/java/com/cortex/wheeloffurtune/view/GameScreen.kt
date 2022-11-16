@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.cortex.wheeloffurtune.ui.theme.WheelOfFurtuneTheme
 import com.cortex.wheeloffurtune.viewmodel.GameState
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel
@@ -230,7 +231,7 @@ fun HealthBar(
 
 
 @Composable
-fun Game(gameUiViewModel: GameUiViewModel, keyboardViewModel: KeyboardViewModel, wheelViewModel: WheelViewModel, modifier: Modifier = Modifier) {
+fun Game(navController: NavController, gameUiViewModel: GameUiViewModel, keyboardViewModel: KeyboardViewModel, wheelViewModel: WheelViewModel, modifier: Modifier = Modifier) {
     WheelOfFurtuneTheme {
         Surface(
             modifier = modifier.fillMaxSize(),
@@ -264,7 +265,7 @@ fun Game(gameUiViewModel: GameUiViewModel, keyboardViewModel: KeyboardViewModel,
                     CountDownView()
                 }
 
-                KeyboardScreen(keyboardViewModel = keyboardViewModel, gameUiViewModel = gameUiViewModel, currentReward = wheelViewModel.getWheelResultAsInt(wheelUiState.value.wheelResult))
+                KeyboardScreen(keyboardViewModel = keyboardViewModel, gameUiViewModel = gameUiViewModel, currentReward = wheelViewModel.getWheelResultAsInt(wheelUiState.value.wheelResult), navController = navController)
 
                 Spacer(modifier = Modifier
                     .size(30.dp)
