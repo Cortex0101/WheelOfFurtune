@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.cortex.wheeloffurtune.viewmodel.CountDownViewModel
 import com.cortex.wheeloffurtune.viewmodel.GameState
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel
 import com.cortex.wheeloffurtune.viewmodel.KeyboardViewModel
@@ -22,22 +23,27 @@ fun KeyboardScreen(
     navController: NavController,
     currentReward: Int,
     gameUiViewModel: GameUiViewModel,
+    countDownViewModel: CountDownViewModel,
     keyboardViewModel: KeyboardViewModel = viewModel()
 ) {
     val keyboardUiState by keyboardViewModel.uiState.collectAsState()
     val gameUiState by gameUiViewModel.uiState.collectAsState()
+
+    val onClick = { letter: Char ->
+        if (gameUiState.gameState == GameState.GUESSING) {
+            keyboardViewModel.pressLetter(letter)
+            gameUiViewModel.guessLetter(letter, currentReward)
+            gameUiViewModel.checkGameStatus(navController)
+            countDownViewModel.startTimer()
+        }
+    }
 
     Column {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             for (letter in keyboardUiState.firstRowLetters) {
                 KeyboardButton(letter = letter,
                                enabled = !keyboardUiState.inactiveLetters.contains(letter),
-                                onClick = {
-                        if (gameUiState.gameState == GameState.GUESSING) {
-                            keyboardViewModel.pressLetter(letter)
-                            gameUiViewModel.guessLetter(letter, currentReward)
-                            gameUiViewModel.checkGameStatus(navController)
-                        }})
+                               onClick = { onClick(letter) })
             }
         }
 
@@ -45,12 +51,7 @@ fun KeyboardScreen(
             for (letter in keyboardUiState.secondRowLetters) {
                 KeyboardButton(letter = letter,
                                enabled = !keyboardUiState.inactiveLetters.contains(letter),
-                                onClick = {
-                        if (gameUiState.gameState == GameState.GUESSING) {
-                            keyboardViewModel.pressLetter(letter)
-                            gameUiViewModel.guessLetter(letter, currentReward)
-                            gameUiViewModel.checkGameStatus(navController)
-                        }})
+                                onClick = { onClick(letter) })
             }
         }
 
@@ -59,29 +60,26 @@ fun KeyboardScreen(
             for (letter in keyboardUiState.thirdRowLetters) {
                 KeyboardButton(letter = letter,
                                enabled = !keyboardUiState.inactiveLetters.contains(letter),
-                               onClick = {
-                                   if (gameUiState.gameState == GameState.GUESSING) {
-                                       keyboardViewModel.pressLetter(letter)
-                                       gameUiViewModel.guessLetter(letter, currentReward)
-                                       gameUiViewModel.checkGameStatus(navController)
-                                   }})
+                               onClick = { onClick(letter) })
             }
         }
     }
 }
 
-
 @Composable
-fun KeyboardButton(letter: Char, enabled: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Button(modifier = modifier.width(30.dp),
-        contentPadding = PaddingValues(0.dp),
-        enabled = enabled,
-        onClick = onClick,
-        elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 10.dp,
-            pressedElevation = 15.dp,
-            disabledElevation = 0.dp
-        )) {
-        Text(text = letter.toString(), fontSize = 20.sp)
+fun KeyboardButton(letter: Char, enabled: Boolean, onClick: () -> Unit) {
+    Button(modifier = Modifier.width(30.dp),
+           contentPadding = PaddingValues(0.dp),
+           enabled = enabled,
+           onClick = onClick,
+           elevation = ButtonDefaults.buttonElevation(
+                           defaultElevation = 10.dp,
+                           pressedElevation = 15.dp,
+                           disabledElevation = 0.dp
+                       )
+          )
+    {
+        Text(text = letter.toString(),
+             fontSize = 20.sp)
     }
 }

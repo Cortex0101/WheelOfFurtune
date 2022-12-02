@@ -15,7 +15,7 @@ import com.cortex.wheeloffurtune.view.components.CountDownIndicator
 import com.cortex.wheeloffurtune.viewmodel.CountDownViewModel
 
 @Composable
-fun CountDownView(viewModel: CountDownViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun CountDownView(viewModel: CountDownViewModel) {
     val time by viewModel.time.observeAsState(Utility.TIME_COUNTDOWN.formatTime())
     val progress by viewModel.progress.observeAsState(1.00F)
     val isPlaying by viewModel.isPlaying.observeAsState(false)

@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
@@ -32,12 +33,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.cortex.wheeloffurtune.ui.theme.WheelOfFurtuneTheme
-import com.cortex.wheeloffurtune.viewmodel.GameState
-import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel
+import com.cortex.wheeloffurtune.viewmodel.*
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel.Companion.extendWordToSize
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel.Companion.replaceUnderscoresWithSpace
-import com.cortex.wheeloffurtune.viewmodel.KeyboardViewModel
-import com.cortex.wheeloffurtune.viewmodel.WheelViewModel
 
 @Composable
 fun Grid(
@@ -145,8 +143,8 @@ fun UserHead(
     firstName: String,
     lastName: String,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.background,
-    strokeColor: Color = MaterialTheme.colorScheme.surface,
+    backgroundColor: Color = darkColors().primary,
+    strokeColor: Color = darkColors().primaryVariant
 ) {
     Box(modifier, contentAlignment = Alignment.Center) {
         val initials = (firstName.take(1) + lastName.take(1)).uppercase()
@@ -158,7 +156,8 @@ fun UserHead(
 
         Text(text = initials,
             style = MaterialTheme.typography.titleLarge,
-            color = Color.White)
+            color = darkColors().onPrimary
+        )
     }
 }
 
@@ -166,7 +165,7 @@ fun UserHead(
 fun MoneyBar(
     gameUiViewModel: GameUiViewModel,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.secondary
+    color: Color = darkColors().primary
 ){
     val uiState = gameUiViewModel.uiState.collectAsState()
 
@@ -182,7 +181,8 @@ fun MoneyBar(
     ){
         Text(text = uiState.value.money.toString() + "$",
             style = MaterialTheme.typography.titleLarge,
-            color = Color.White)
+            color = darkColors().onPrimary
+        )
     }
 }
 
@@ -192,8 +192,7 @@ fun WordDisplay(modifier: Modifier = Modifier,
     val uiState = gameUiViewModel.uiState.collectAsState()
 
     Column(modifier = Modifier
-        .background(MaterialTheme.colorScheme.surfaceTint)
-        .border(4.dp, MaterialTheme.colorScheme.surface)) {
+        .background(darkColors().background)) {
         Grid(gameUiViewModel = gameUiViewModel, word = extendWordToSize("", 17).toList())
         Grid(gameUiViewModel = gameUiViewModel, word = extendWordToSize(uiState.value.word, 17).toList())
         Grid(gameUiViewModel = gameUiViewModel, word = extendWordToSize("", 17).toList())
@@ -204,7 +203,7 @@ fun WordDisplay(modifier: Modifier = Modifier,
 fun HealthBar(
     gameUiViewModel: GameUiViewModel,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.secondary
+    color: Color = darkColors().primary
 ){
     val uiState = gameUiViewModel.uiState.collectAsState()
     val iconsIndex = (0 until uiState.value.lives).toList()
@@ -222,7 +221,7 @@ fun HealthBar(
     ){
         LazyRow {
             items(iconsIndex) {
-                Icon(imageVector = icons[it], contentDescription = "Heart", tint = Color.Red)
+                Icon(imageVector = icons[it], contentDescription = "Heart", tint = darkColors().onPrimary)
             }
         }
 
@@ -231,11 +230,11 @@ fun HealthBar(
 
 
 @Composable
-fun Game(navController: NavController, gameUiViewModel: GameUiViewModel, keyboardViewModel: KeyboardViewModel, wheelViewModel: WheelViewModel, modifier: Modifier = Modifier) {
+fun Game(navController: NavController, gameUiViewModel: GameUiViewModel, keyboardViewModel: KeyboardViewModel, wheelViewModel: WheelViewModel, countDownViewModel: CountDownViewModel, modifier: Modifier = Modifier) {
     WheelOfFurtuneTheme {
         Surface(
             modifier = modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background,
+            color = darkColors().background,
         ) {
             val keyboardUiState = keyboardViewModel.uiState.collectAsState()
             val gameUiState = gameUiViewModel.uiState.collectAsState()
@@ -258,14 +257,15 @@ fun Game(navController: NavController, gameUiViewModel: GameUiViewModel, keyboar
                 Box(modifier = Modifier.fillMaxWidth(0.8f),
                     contentAlignment = Alignment.TopCenter) {
                     CategoryDisplay(category = gameUiState.value.category,
-                        backgroundGradientSide = MaterialTheme.colorScheme.primary,
-                        backgroundGradientMiddle = MaterialTheme.colorScheme.secondary,
-                        borderGradientSide = MaterialTheme.colorScheme.tertiary,
-                        borderGradientMiddle = MaterialTheme.colorScheme.tertiaryContainer)
-                    CountDownView()
+                        backgroundGradientSide = darkColors().primary,
+                        backgroundGradientMiddle = darkColors().secondary,
+                        borderGradientSide = darkColors().primaryVariant,
+                        borderGradientMiddle = darkColors().secondaryVariant
+                    )
+                    CountDownView(countDownViewModel)
                 }
 
-                KeyboardScreen(keyboardViewModel = keyboardViewModel, gameUiViewModel = gameUiViewModel, currentReward = wheelViewModel.getWheelResultAsInt(wheelUiState.value.wheelResult), navController = navController)
+                KeyboardScreen(keyboardViewModel = keyboardViewModel, gameUiViewModel = gameUiViewModel, countDownViewModel = countDownViewModel, currentReward = wheelViewModel.getWheelResultAsInt(wheelUiState.value.wheelResult), navController = navController)
 
                 Spacer(modifier = Modifier
                     .size(30.dp)
@@ -276,7 +276,11 @@ fun Game(navController: NavController, gameUiViewModel: GameUiViewModel, keyboar
                     CircularWheelButton(
                         onClick = {
                             wheelViewModel.spin()
-                            gameUiViewModel.waitForGuess()
+                            if (wheelViewModel.uiState.value.wheelResult == WheelResult.BANKRUPT) {
+                                gameUiViewModel.resetMoney()
+                            } else {
+                                gameUiViewModel.waitForGuess()
+                            }
                         },
                         shown = gameUiState.value.gameState == GameState.WAITING_FOR_SPIN,
                         modifier = Modifier.padding(start = 15.dp))

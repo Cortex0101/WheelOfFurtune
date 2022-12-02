@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.cortex.wheeloffurtune.view.*
+import com.cortex.wheeloffurtune.viewmodel.CountDownViewModel
 import com.cortex.wheeloffurtune.viewmodel.GameUiViewModel
 import com.cortex.wheeloffurtune.viewmodel.KeyboardViewModel
 import com.cortex.wheeloffurtune.viewmodel.WheelViewModel
@@ -22,6 +23,7 @@ class MainActivity : ComponentActivity() {
         val gameUiViewModel = GameUiViewModel()
         val keyboardViewModel = KeyboardViewModel()
         val wheelViewModel = WheelViewModel()
+        val countDownViewModel = CountDownViewModel()
         gameUiViewModel.newWord(words)
 
         setContent {
@@ -35,7 +37,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable(route = "game") {
-                    Game(navController = navController, gameUiViewModel = gameUiViewModel, keyboardViewModel = keyboardViewModel, wheelViewModel = wheelViewModel)
+                    Game(navController = navController, gameUiViewModel = gameUiViewModel, keyboardViewModel = keyboardViewModel, wheelViewModel = wheelViewModel, countDownViewModel = countDownViewModel)
                 }
 
                 composable(route = "gameOver") {

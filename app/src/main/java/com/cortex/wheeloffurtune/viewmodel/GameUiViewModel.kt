@@ -70,6 +70,12 @@ class GameUiViewModel : ViewModel() {
         _uiState.value = GameUiState()
     }
 
+    fun resetMoney() {
+        _uiState.update { currentState ->
+            currentState.copy(money = 0)
+        }
+    }
+
     fun checkGameStatus(navController: NavController) {
         if (_uiState.value.gameState == GameState.GAME_OVER) {
             navController.navigate("gameOver")

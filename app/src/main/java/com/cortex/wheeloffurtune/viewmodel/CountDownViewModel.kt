@@ -51,7 +51,7 @@ class CountDownViewModel : ViewModel() {
 
     }
 
-    private fun startTimer() {
+    public fun startTimer() {
 
         _isPlaying.value = true
         countDownTimer.start()
